@@ -1,0 +1,697 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://muhsinengin.com/schemas/board-event-v1.json",
+  "title": "Çizgi protokolü v1 olayı",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "lesson": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "author": {
+          "enum": [
+            "T",
+            "S"
+          ]
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 999
+        },
+        "act": {
+          "const": "basla"
+        },
+        "stroke": {
+          "type": "string",
+          "pattern": "^[TS]-[0-9]{1,9}$"
+        },
+        "tool": {
+          "enum": [
+            "kalem",
+            "vurgu",
+            "silgi_alan",
+            "cizgi",
+            "cember"
+          ]
+        },
+        "w": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 0.2
+        },
+        "color": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$"
+        },
+        "pts": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 3,
+            "items": [
+              {
+                "type": "number",
+                "minimum": -1,
+                "maximum": 10
+              },
+              {
+                "type": "number",
+                "minimum": -1,
+                "maximum": 10
+              },
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            ]
+          },
+          "maxItems": 512
+        }
+      },
+      "required": [
+        "v",
+        "lesson",
+        "author",
+        "seq",
+        "t",
+        "page",
+        "act",
+        "stroke",
+        "tool",
+        "w",
+        "color",
+        "pts"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "lesson": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "author": {
+          "enum": [
+            "T",
+            "S"
+          ]
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 999
+        },
+        "act": {
+          "const": "ciz"
+        },
+        "stroke": {
+          "type": "string",
+          "pattern": "^[TS]-[0-9]{1,9}$"
+        },
+        "pts": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 3,
+            "items": [
+              {
+                "type": "number",
+                "minimum": -1,
+                "maximum": 10
+              },
+              {
+                "type": "number",
+                "minimum": -1,
+                "maximum": 10
+              },
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            ]
+          },
+          "maxItems": 512
+        }
+      },
+      "required": [
+        "v",
+        "lesson",
+        "author",
+        "seq",
+        "t",
+        "page",
+        "act",
+        "stroke",
+        "pts"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "lesson": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "author": {
+          "enum": [
+            "T",
+            "S"
+          ]
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 999
+        },
+        "act": {
+          "const": "bitir"
+        },
+        "stroke": {
+          "type": "string",
+          "pattern": "^[TS]-[0-9]{1,9}$"
+        },
+        "pts": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 3,
+            "items": [
+              {
+                "type": "number",
+                "minimum": -1,
+                "maximum": 10
+              },
+              {
+                "type": "number",
+                "minimum": -1,
+                "maximum": 10
+              },
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            ]
+          },
+          "maxItems": 512
+        }
+      },
+      "required": [
+        "v",
+        "lesson",
+        "author",
+        "seq",
+        "t",
+        "page",
+        "act",
+        "stroke",
+        "pts"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "lesson": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "author": {
+          "enum": [
+            "T",
+            "S"
+          ]
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 999
+        },
+        "act": {
+          "const": "sil"
+        },
+        "target": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[TS]-[0-9]{1,9}$"
+          },
+          "minItems": 1,
+          "maxItems": 1000
+        }
+      },
+      "required": [
+        "v",
+        "lesson",
+        "author",
+        "seq",
+        "t",
+        "page",
+        "act",
+        "target"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "lesson": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "author": {
+          "enum": [
+            "T",
+            "S"
+          ]
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 999
+        },
+        "act": {
+          "const": "geri_getir"
+        },
+        "target": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[TS]-[0-9]{1,9}$"
+          },
+          "minItems": 1,
+          "maxItems": 1000
+        }
+      },
+      "required": [
+        "v",
+        "lesson",
+        "author",
+        "seq",
+        "t",
+        "page",
+        "act",
+        "target"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "lesson": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "author": {
+          "enum": [
+            "T",
+            "S"
+          ]
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 999
+        },
+        "act": {
+          "const": "tasi"
+        },
+        "target": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[TS]-[0-9]{1,9}$"
+          },
+          "minItems": 1,
+          "maxItems": 1000
+        },
+        "dx": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 10
+        },
+        "dy": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 10
+        }
+      },
+      "required": [
+        "v",
+        "lesson",
+        "author",
+        "seq",
+        "t",
+        "page",
+        "act",
+        "target",
+        "dx",
+        "dy"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "lesson": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "author": {
+          "enum": [
+            "T",
+            "S"
+          ]
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 999
+        },
+        "act": {
+          "const": "sayfa_ekle"
+        },
+        "kind": {
+          "enum": [
+            "bos",
+            "kareli",
+            "cizgili",
+            "koordinat",
+            "pdf",
+            "soru"
+          ]
+        },
+        "src": {
+          "type": "string",
+          "maxLength": 512
+        }
+      },
+      "required": [
+        "v",
+        "lesson",
+        "author",
+        "seq",
+        "t",
+        "page",
+        "act",
+        "kind"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "lesson": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "author": {
+          "enum": [
+            "T",
+            "S"
+          ]
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 999
+        },
+        "act": {
+          "const": "sayfa_gec"
+        }
+      },
+      "required": [
+        "v",
+        "lesson",
+        "author",
+        "seq",
+        "t",
+        "page",
+        "act"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "lesson": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "author": {
+          "enum": [
+            "T",
+            "S"
+          ]
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 999
+        },
+        "act": {
+          "const": "gorsel_ekle"
+        },
+        "id": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "src": {
+          "type": "string",
+          "maxLength": 512
+        },
+        "x": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 10
+        },
+        "y": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 10
+        },
+        "w": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 10
+        },
+        "h": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 10
+        }
+      },
+      "required": [
+        "v",
+        "lesson",
+        "author",
+        "seq",
+        "t",
+        "page",
+        "act",
+        "id",
+        "src",
+        "x",
+        "y",
+        "w",
+        "h"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "lesson": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "author": {
+          "enum": [
+            "T",
+            "S"
+          ]
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "t": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 999
+        },
+        "act": {
+          "const": "metin_ekle"
+        },
+        "id": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "latex": {
+          "type": "boolean"
+        },
+        "x": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 10
+        },
+        "y": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 10
+        },
+        "size": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 0.5
+        }
+      },
+      "required": [
+        "v",
+        "lesson",
+        "author",
+        "seq",
+        "t",
+        "page",
+        "act",
+        "id",
+        "text",
+        "latex",
+        "x",
+        "y",
+        "size"
+      ]
+    }
+  ]
+}
