@@ -53,6 +53,7 @@ async function girisSayfasi(b: api.Ben) {
   const { data } = await api.sb.auth.getSession();
   const yanlisHesap = data.session && b.rol === null;
   view(`<main class="kart dar">
+    <ana-sayfa-dugmesi><a href="https://muhsinengin.com/">Ana sayfa</a></ana-sayfa-dugmesi>
     <p class="ust">Birebir Ders</p>
     <h1>Öğretmen girişi</h1>
     <p class="aciklama">Teşhis Defteri'ndeki e-posta ve şifrenle giriş yap. <strong>Öğrenciysen</strong> öğretmeninin gönderdiği linki aç; giriş yapman gerekmez.</p>
@@ -74,6 +75,7 @@ async function girisSayfasi(b: api.Ben) {
 // ---------------- öğrenci PIN girişi ----------------
 function pinSayfasi() {
   view(`<main class="kart dar">
+    <ana-sayfa-dugmesi><a href="https://muhsinengin.com/">Ana sayfa</a></ana-sayfa-dugmesi>
     <p class="ust">Birebir Ders</p>
     <h1>Derse giriş</h1>
     <p class="aciklama">Öğretmeninin sana verdiği 6 haneli PIN'i yaz. Bu cihazda bir kez yapman yeterli.</p>
@@ -98,7 +100,7 @@ function pinSayfasi() {
 
 // ---------------- öğretmen paneli ----------------
 async function ogretmenPaneli(b: api.Ben) {
-  view(`<header class="bar"><strong>Birebir Ders</strong><span>${esc(b.ad)}</span><button id="cik" class="ince">Çıkış</button></header>
+  view(`<header class="bar"><ana-sayfa-dugmesi><a href="https://muhsinengin.com/">Ana sayfa</a></ana-sayfa-dugmesi><strong>Birebir Ders</strong><span>${esc(b.ad)}</span><button id="cik" class="ince">Çıkış</button></header>
   <main class="panel">
     <section class="kart"><h2>Dersler</h2><div id="dersler">Yükleniyor…</div>
       <form id="fd" class="satir">
@@ -180,7 +182,7 @@ async function ogretmenPaneli(b: api.Ben) {
 
 // ---------------- öğrenci defteri ----------------
 async function ogrenciDefteri(b: api.Ben) {
-  view(`<header class="bar"><strong>Birebir Ders</strong><span>${esc(b.ad)}</span><button id="cik" class="ince">Çıkış</button></header>
+  view(`<header class="bar"><ana-sayfa-dugmesi><a href="https://muhsinengin.com/">Ana sayfa</a></ana-sayfa-dugmesi><strong>Birebir Ders</strong><span>${esc(b.ad)}</span><button id="cik" class="ince">Çıkış</button></header>
     <main class="panel"><section class="kart"><h2>Derslerim</h2><div id="dersler">Yükleniyor…</div></section></main>`);
   $('#cik').onclick = async () => { if (confirm('Bu cihazdan çıkılsın mı? Tekrar girmek için link ve PIN gerekir.')) { await api.cikis(); location.reload(); } };
   const ciz = async () => {
@@ -269,4 +271,4 @@ async function dersOdasi(id: string, b: api.Ben) {
   }
 }
 
-route().catch(e => view(`<main class="kart dar"><h1>Bir sorun oluştu</h1><p>${esc(e.message)}</p></main>`));
+route().catch(e => view(`<main class="kart dar"><ana-sayfa-dugmesi><a href="https://muhsinengin.com/">Ana sayfa</a></ana-sayfa-dugmesi><h1>Bir sorun oluştu</h1><p>${esc(e.message)}</p></main>`));
