@@ -22,8 +22,9 @@ const ROOT = new URL('../../', import.meta.url).pathname;
 const PGHOST = '/var/lib/postgresql/bltest', PGPORT = 54329, DB = 'bltest_app';
 const PORT = Number(process.env.PORT || 8800), REST = 3010;
 const SECRET = 'yerel-test-jwt-sirri-en-az-32-karakter-uzunlukta';
-const FILES = '/tmp/claude-0/-home-claude/2cfc59d7-a6f0-5c78-9515-6d5ab28faabe/scratchpad/yigin-dosyalar';
-const POSTGREST = '/tmp/claude-0/-home-claude/2cfc59d7-a6f0-5c78-9515-6d5ab28faabe/scratchpad/tools/postgrest';
+const FILES = process.env.YIGIN_DOSYALAR || '/tmp/birebir-yigin-dosyalar';
+// PostgREST ikilisi: POSTGREST ortam değişkeni ya da PATH'teki "postgrest" (github.com/PostgREST/postgrest/releases, linux-static-x64)
+const POSTGREST = process.env.POSTGREST || 'postgrest';
 
 // ---------- JWT ----------
 const b64u = (b: Buffer | string) => Buffer.from(b).toString('base64url');
@@ -78,6 +79,7 @@ async function asUser(claims: any, sql: string, params: unknown[] = []) {
 // ---------- PostgREST ----------
 const pgrst = spawn(POSTGREST, [], {
   env: {
+    PATH: process.env.PATH ?? '/usr/local/bin:/usr/bin:/bin',
     PGRST_DB_URI: `postgres://authenticator@/${DB}?host=${PGHOST}&port=${PGPORT}`,
     PGRST_DB_SCHEMAS: 'public', PGRST_DB_ANON_ROLE: 'anon', PGRST_JWT_SECRET: SECRET,
     PGRST_SERVER_PORT: String(REST), PGRST_LOG_LEVEL: 'error',
