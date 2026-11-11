@@ -1,0 +1,95 @@
+{
+  "tarih": "2026-10-30T07:28:25.096Z",
+  "not": "Yerel sahte yayın sunucusu; gerçek Supabase ile denenmedi.",
+  "senaryolar": [
+    {
+      "senaryo": "yerel (ağ gecikmesi yok)",
+      "alinan_paket": 1134,
+      "kalemden_alima_ms": {
+        "n": 1134,
+        "medyan": 34,
+        "p95": 44,
+        "maks": 57
+      },
+      "kalemden_ekrana_ms": {
+        "n": 1134,
+        "medyan": 41,
+        "p95": 60,
+        "maks": 70
+      },
+      "sure_sn": 65
+    },
+    {
+      "senaryo": "benzetilmiş 50 ms ± 15 ms ağ",
+      "alinan_paket": 1071,
+      "kalemden_alima_ms": {
+        "n": 1071,
+        "medyan": 75,
+        "p95": 94,
+        "maks": 117
+      },
+      "kalemden_ekrana_ms": {
+        "n": 1071,
+        "medyan": 88,
+        "p95": 106,
+        "maks": 138
+      },
+      "sure_sn": 61
+    },
+    {
+      "senaryo": "benzetilmiş 120 ms ± 40 ms (zayıf mobil)",
+      "alinan_paket": 1086,
+      "kalemden_alima_ms": {
+        "n": 1086,
+        "medyan": 145,
+        "p95": 178,
+        "maks": 195
+      },
+      "kalemden_ekrana_ms": {
+        "n": 1086,
+        "medyan": 160,
+        "p95": 197,
+        "maks": 215
+      },
+      "sure_sn": 61
+    }
+  ],
+  "cizim_suresi_ms": {
+    "masaustu_A": {
+      "n": 3287,
+      "medyan": 5.599999999976717,
+      "p95": 9.5,
+      "maks": 21.900000000023283
+    },
+    "telefon_B": {
+      "n": 3161,
+      "medyan": 5.599999999976717,
+      "p95": 9.600000000093132,
+      "maks": 14.900000000023283
+    }
+  },
+  "gonderilen_paket_A": 3291,
+  "kopma_testi": {
+    "cevrimdisi_sn": 20,
+    "kopukken_farkli_mi": true,
+    "kopukken_B_durumu": "kopuk",
+    "cizim_bitis_ms_kopustan_itibaren": 18461,
+    "yeniden_baglanma_ms_kopustan_itibaren": 20012,
+    "baglandiktan_sonra_esitlenme_ms": 233,
+    "sonuc_ayni_durum": true,
+    "cizgi_sayisi": {
+      "A": 200,
+      "B": 200
+    },
+    "ozet": {
+      "A": "3bd799de",
+      "B": "3bd799de"
+    }
+  },
+  "gec_katilim": {
+    "esitlenme_ms": 295,
+    "piksel_boyutu": "1280x1810",
+    "farkli_piksel": 0,
+    "farkli_piksel_orani": 0
+  }
+}
