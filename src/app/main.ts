@@ -141,6 +141,18 @@ async function ogretmenPaneli(b: api.Ben) {
   }
   await yukle().catch(e => msg($('#md'), e.message));
 
+  // Teşhis Defteri'nden "Birebir ders" ile gelindiyse (#/?ogr=<öğrenci>) o öğrenciyi seçili getir
+  const og = new URLSearchParams(location.hash.split('?')[1] || '').get('ogr');
+  if (og) {
+    const o = ogr.find(x => x.id === og);
+    history.replaceState(null, '', location.pathname + '#/');
+    if (o) {
+      $<HTMLSelectElement>('select[name=s]').value = o.id;
+      $('#fd').scrollIntoView({ block: 'center' });
+      msg($('#md'), `${o.name} seçildi: saati ayarlayıp "Ders planla"ya bas.`, 'tamam');
+    }
+  }
+
   app.addEventListener('click', async ev => {
     const t = ev.target as HTMLElement;
     try {
