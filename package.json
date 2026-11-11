@@ -9,7 +9,7 @@
     "measure": "npm run build && node proto/measure.mjs",
     "typecheck": "tsc --noEmit --strict --module nodenext --moduleResolution nodenext --target es2022 src/protocol/*.ts",
     "e2e": "npm run build && node proto/e2e.mjs",
-    "test:db": "node db/test/rls.test.mjs",
+    "test:db": "node db/test/rls.test.mjs && node db/test/olcum.test.mjs",
     "build:app": "esbuild src/app/main.ts --bundle --format=iife --target=es2020 --minify --sourcemap --outfile=app/dist/app.js && mkdir -p app/dist/pdfjs && cp node_modules/pdfjs-dist/build/pdf.min.mjs node_modules/pdfjs-dist/build/pdf.worker.min.mjs app/dist/pdfjs/",
     "test:app": "db/test/e2e-calistir.sh"
   },
