@@ -50,7 +50,7 @@ await admin.query(`create database ${DB}`);
 await admin.end();
 const db = new Client({ host: PGHOST, port: PGPORT, user: 'postgres', database: DB });
 await db.connect();
-for (const f of ['db/test/supabase_mock.sql', 'db/test/teshis_mevcut.sql', 'db/001_birebir.sql']) await db.query(readFileSync(ROOT + f, 'utf8'));
+for (const f of ['db/test/supabase_mock.sql', 'db/test/teshis_mevcut.sql', 'db/001_birebir.sql', 'db/003_olcum.sql']) await db.query(readFileSync(ROOT + f, 'utf8'));
 await db.query(`
   alter table auth.users add column if not exists pw text, add column if not exists app_metadata jsonb not null default '{}';
   create unique index if not exists objects_kova_ad on storage.objects (bucket_id, name);
