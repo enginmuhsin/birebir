@@ -35,23 +35,23 @@ for (const u of [A0, T1, T2, T3, U1, U2]) await su('insert into auth.users(id) v
 await su('insert into public.yoneticiler values ($1)', [A0]);
 const t1 = { uid: T1 }, t2 = { uid: T2 }, t3 = { uid: T3 }, u1 = { uid: U1, ogrenci: true }, u2 = { uid: U2, ogrenci: true };
 await su(`insert into public.bl_ogretmenler(user_id, ad) values ($1, 'Muhsin'), ($2, 'Ayşe')`, [T1, T2]);
-const s1 = (await su(`insert into public.teshis_students(teacher_id, name) values ($1, 'Göknur') returning id`, [T1])).rows[0].id;
-const s2 = (await su(`insert into public.teshis_students(teacher_id, name) values ($1, 'Ece') returning id`, [T2])).rows[0].id;
+const s1 = (await su(`insert into public.teshis_students(teacher_id, name) values ($1, 'Deneme Öğrenci') returning id`, [T1])).rows[0].id;
+const s2 = (await su(`insert into public.teshis_students(teacher_id, name) values ($1, 'Deneme Öğrenci 2') returning id`, [T2])).rows[0].id;
 for (const [s, t, u] of [[s1, T1, U1], [s2, T2, U2]])
   await su(`insert into public.bl_ogrenci_erisim(student_id, teacher_id, token_hash, pin_hash, auth_user_id) values ($1, $2, extensions.digest($4, 'sha256'), '\\x00', $3)`, [s, t, u, String(s)]);
 
 // ===== 1) Soru bankası ve anahtar =====
 const siklar = JSON.stringify(['16', '20', '22', '24', '28']);
 let r = await as(t1, `insert into public.bl_maddeler(kod, kazanim, kok, soru, siklar) values
-  ('D3.ON.1', 'K1', 'ABC dik üçgen…', '|BC| = x?', $1), ('D3.ON.2', 'K1', 'kök 2', 'soru 2', $1),
-  ('D3.ON.3', 'K2', 'kök 3', 'soru 3', $1), ('D3.SON.1', 'K1', 'kök b1', 'soru b1', $1) returning id, kod`, [siklar]);
+  ('D3.ON.1', 'TG02.1', 'ABC dik üçgen…', '|BC| = x?', $1), ('D3.ON.2', 'TG02.1', 'kök 2', 'soru 2', $1),
+  ('D3.ON.3', 'TG02.2', 'kök 3', 'soru 3', $1), ('D3.SON.1', 'TG02.1', 'kök b1', 'soru b1', $1) returning id, kod`, [siklar]);
 ok('Öğretmen soru bankasına madde ekler', r.rows?.length === 4, r.error);
 const M = Object.fromEntries((r.rows || []).map(x => [x.kod, x.id]));
 r = await as(t1, `insert into public.bl_madde_anahtar(madde_id, dogru, yanilgilar, cozum) values
   ($1, 3, '{"0": "Kenarları çıkardı"}', '5-12-13 × 2'), ($2, 2, '{}', ''), ($3, 1, '{"4": "Kök almadı"}', ''), ($4, 0, '{}', '')`,
   [M['D3.ON.1'], M['D3.ON.2'], M['D3.ON.3'], M['D3.SON.1']]);
 ok('Öğretmen anahtar girer', !r.error, r.error);
-r = await as(t1, `insert into public.bl_maddeler(kod, kazanim, kok, soru, siklar) values ('X', 'K1', 'k', 's', '["a","b"]')`);
+r = await as(t1, `insert into public.bl_maddeler(kod, kazanim, kok, soru, siklar) values ('X', 'TG02.1', 'k', 's', '["a","b"]')`);
 ok('Beş şıktan az olan madde reddedilir', !!r.error);
 r = await as(t2, `select count(*)::int n from public.bl_maddeler`);
 ok('Başka öğretmen maddeleri görmez', r.rows?.[0]?.n === 0);
@@ -59,7 +59,7 @@ r = await as(t2, `select count(*)::int n from public.bl_madde_anahtar`);
 ok('Başka öğretmen anahtarları görmez', r.rows?.[0]?.n === 0);
 r = await as(t2, `insert into public.bl_madde_anahtar(madde_id, dogru) values ($1, 0)`, [M['D3.ON.1']]);
 ok('Başka öğretmen bu maddeye anahtar yazamaz', !!r.error);
-r = await as(t3, `insert into public.bl_maddeler(kod, kazanim, kok, soru, siklar) values ('Y', 'K1', 'k', 's', $1)`, [siklar]);
+r = await as(t3, `insert into public.bl_maddeler(kod, kazanim, kok, soru, siklar) values ('Y', 'TG02.1', 'k', 's', $1)`, [siklar]);
 ok('Birebir üyesi olmayan öğretmen madde ekleyemez', !!r.error);
 
 // ===== 2) Test şablonu =====
@@ -71,11 +71,11 @@ r = await as(t1, `insert into public.bl_testler(kod, baslik, ders_kodu, tur, mad
 const TSON = r.rows?.[0]?.id;
 r = await as(t1, `insert into public.bl_testler(kod, baslik, ders_kodu, tur, maddeler) values ('ZZ', 'Tekrarlı', 'D3', 'on', $1)`, [[M['D3.ON.1'], M['D3.ON.1']]]);
 ok('Aynı soru testte iki kez olamaz', !!r.error);
-await su(`insert into public.bl_maddeler(teacher_id, kod, kazanim, kok, soru, siklar) values ($1, 'ANAHTARSIZ', 'K1', 'k', 's', $2)`, [T1, siklar]);
+await su(`insert into public.bl_maddeler(teacher_id, kod, kazanim, kok, soru, siklar) values ($1, 'ANAHTARSIZ', 'TG02.1', 'k', 's', $2)`, [T1, siklar]);
 const anahtarsiz = (await su(`select id from public.bl_maddeler where kod = 'ANAHTARSIZ'`)).rows[0].id;
 r = await as(t1, `insert into public.bl_testler(kod, baslik, ders_kodu, tur, maddeler) values ('ZZ', 'Eksik', 'D3', 'on', $1)`, [[anahtarsiz]]);
 ok('Anahtarı girilmemiş soruyla test kurulamaz', !!r.error);
-const yabanci = (await su(`insert into public.bl_maddeler(teacher_id, kod, kazanim, kok, soru, siklar) values ($1, 'Y1', 'K1', 'k', 's', $2) returning id`, [T2, siklar])).rows[0].id;
+const yabanci = (await su(`insert into public.bl_maddeler(teacher_id, kod, kazanim, kok, soru, siklar) values ($1, 'Y1', 'TG02.1', 'k', 's', $2) returning id`, [T2, siklar])).rows[0].id;
 await su(`insert into public.bl_madde_anahtar(madde_id, dogru) values ($1, 0)`, [yabanci]);
 r = await as(t1, `insert into public.bl_testler(kod, baslik, ders_kodu, tur, maddeler) values ('ZZ', 'Yabancı', 'D3', 'on', $1)`, [[yabanci]]);
 ok('Başka öğretmenin sorusuyla test kurulamaz', !!r.error);
@@ -168,11 +168,11 @@ ok('Uygulanmış testin başlığı değiştirilebilir', !r.error && r.count ===
 // ===== 8) Rapor =====
 r = await as(t1, `select public.bl_olcum_raporu($1, 'D3') j`, [s1]);
 const rp = r.rows?.[0]?.j;
-ok('Rapor: öğrenci adı ve gönderilmiş 4 ölçüm', rp?.ogrenci === 'Göknur' && rp.olcumler.length === 4, JSON.stringify(r).slice(0, 300));
-const k1on = rp?.kazanimlar?.find(x => x.kazanim === 'K1' && x.tur === 'on');
-ok('Rapor: kazanım × tür toplamı (K1 ön: 1/4)', k1on?.dogru === 1 && k1on?.soru === 4, JSON.stringify(rp?.kazanimlar));
-const k1son = rp?.kazanimlar?.find(x => x.kazanim === 'K1' && x.tur === 'son');
-ok('Rapor: K1 son test 1/2 (kâğıt doğru, ekran boş)', k1son?.dogru === 1 && k1son?.soru === 2, JSON.stringify(k1son));
+ok('Rapor: öğrenci adı ve gönderilmiş 4 ölçüm', rp?.ogrenci === 'Deneme Öğrenci' && rp.olcumler.length === 4, JSON.stringify(r).slice(0, 300));
+const k1on = rp?.kazanimlar?.find(x => x.kazanim === 'TG02.1' && x.tur === 'on');
+ok('Rapor: kazanım × tür toplamı (TG02.1 ön: 1/4)', k1on?.dogru === 1 && k1on?.soru === 4, JSON.stringify(rp?.kazanimlar));
+const k1son = rp?.kazanimlar?.find(x => x.kazanim === 'TG02.1' && x.tur === 'son');
+ok('Rapor: TG02.1 son test 1/2 (kâğıt doğru, ekran boş)', k1son?.dogru === 1 && k1son?.soru === 2, JSON.stringify(k1son));
 const s0 = rp?.olcumler?.[0]?.sorular;
 ok('Rapor: işaretlenen şık, anahtar ve yanılgı görünür', s0?.[1]?.cevap === 'A' && s0[1].anahtar === 'C' && s0[0].yanilgi === null && s0[0].sure_sn === 120, JSON.stringify(s0));
 r = await as(t1, `select public.bl_olcum_raporu($1, 'D3') j`, [s1]);
@@ -189,6 +189,35 @@ await as(u1, `select public.bl_olcum_gonder($1, $2::jsonb) j`, [O5, JSON.stringi
 const rp2 = (await as(t1, `select public.bl_olcum_raporu($1) j`, [s1])).rows[0].j;
 ok('Rapor: yanlış şıkkın yanılgısı yazılır', rp2.olcumler.at(-1).sorular[0].yanilgi === 'Kenarları çıkardı', JSON.stringify(rp2.olcumler.at(-1).sorular[0]));
 
+// ===== 8b) Kazanım biçimi ve şekiller (özel 'bl-sekiller' kovası) =====
+r = await as(t1, `insert into public.bl_maddeler(kod, kazanim, kok, soru, siklar) values ('KB', 'K1', 'k', 's', $1)`, [siklar]);
+ok('Müfredat dışı kazanım kimliği (K1) reddedilir', !!r.error, JSON.stringify(r));
+r = await as(t1, `insert into public.bl_maddeler(kod, kazanim, kok, soru, siklar) values ('KB2', 'AG04.3', 'k', 's', $1)`, [siklar]);
+ok('Müfredat kimliği (AG04.3) kabul edilir', !r.error, JSON.stringify(r));
+const sekilYolu = `${T1}/d3-on-1.png`;
+r = await as(t1, `insert into storage.objects(bucket_id, name) values ('bl-sekiller', $1)`, [sekilYolu]);
+ok('Öğretmen kendi klasörüne şekil yükler', !r.error, JSON.stringify(r));
+r = await as(t1, `insert into storage.objects(bucket_id, name) values ('bl-sekiller', $1)`, [`${T2}/baskasi.png`]);
+ok('Öğretmen başka öğretmenin klasörüne yükleyemez', !!r.error);
+r = await as(u1, `insert into storage.objects(bucket_id, name) values ('bl-sekiller', $1)`, [`${U1}/x.png`]);
+ok('Öğrenci şekil yükleyemez', !!r.error);
+r = await as(t1, `update public.bl_maddeler set sekil = '../gizli.png' where kod = 'D3.ON.1'`);
+ok('Geçersiz şekil yolu reddedilir', !!r.error);
+r = await as(t1, `update public.bl_maddeler set sekil = $1 where kod = 'D3.ON.1' returning id`, [sekilYolu]);
+ok('Soruya şekil bağlanır', r.count === 1, JSON.stringify(r));
+const sekilSay = async (kim) => { const x = await as(kim, `select count(*)::int n from storage.objects where bucket_id = 'bl-sekiller' and name = $1`, [sekilYolu]); return x.error ? -1 : x.rows[0].n; };
+ok('Ölçüm açılmadan öğrenci şekli göremez', await sekilSay(u1) === 0);
+r = await as(t1, `select public.bl_olcum_ac($1, $2) id`, [s1, TON]); const O7 = r.rows[0].id;
+ok('Açık ölçümdeki şekli öğrenci görür', await sekilSay(u1) === 1);
+ok('Başka öğrenci aynı şekli göremez', await sekilSay(u2) === 0);
+ok('Başka öğretmen şekli göremez', await sekilSay(t2) === 0);
+ok('Anonim kullanıcı şekli göremez', await sekilSay('anon') <= 0);
+ok('Öğretmen kendi şeklini görür', await sekilSay(t1) === 1);
+await as(u1, `select public.bl_olcum_gonder($1, '[]'::jsonb) j`, [O7]);
+ok('Gönderimden sonra öğrenci şekli artık göremez', await sekilSay(u1) === 0);
+r = await as(u1, `select public.bl_sekil_gorebilir($1) g`, [sekilYolu]);
+ok('Şekil izni fonksiyonu öğrenciye anahtar sızdırmaz (yalnız evet/hayır)', r.rows?.[0]?.g === false, JSON.stringify(r));
+
 // ===== 9) Link iptali ölçüme erişimi de keser =====
 r = await as(t1, `select public.bl_olcum_ac($1, $2) id`, [s1, TSON]); const O6 = r.rows[0].id;
 await as(t1, `select public.bl_ogrenci_linki_iptal($1)`, [s1]);
@@ -201,13 +230,17 @@ ok('Ölçüm işlemleri denetime yazılır', ['olcum_ac', 'olcum_gonder', 'olcum
 
 // ===== 11) Doğrulama sorgusu, geri alma ve tekrar uygulama =====
 const dog = (await su(readFileSync(dir + '004_olcum_dogrulama.sql', 'utf8'))).rows[0].dogrulama;
-ok('Doğrulama sorgusu: 5 tablo, RLS açık, 5 politika, 10 fonksiyon, anon anahtarı okuyamaz',
-  dog.tablolar.length === 5 && dog.rls_acik && Number(dog.politika_sayisi) === 5 && dog.fonksiyonlar.length === 10 && dog.anon_anahtar_yetkisi === false, JSON.stringify(dog));
+ok('Doğrulama sorgusu: 5 tablo, RLS açık, 5 politika, 10 fonksiyon, özel şekil kovası + 4 politika, anon anahtarı okuyamaz',
+  dog.tablolar.length === 5 && dog.rls_acik && Number(dog.politika_sayisi) === 5 && dog.fonksiyonlar.length === 10 && dog.anon_anahtar_yetkisi === false
+  && dog.sekil_kovasi_ozel === true && Number(dog.sekil_politikalari) === 4 && dog.sekil_fonksiyonu === true, JSON.stringify(dog));
 const once = (await su(`select count(*)::int n from public.bl_dersler`)).rows[0].n;
 await db.query(readFileSync(dir + '003_olcum_geri.sql', 'utf8'));
 r = await su(`select count(*)::int n from pg_tables where schemaname = 'public' and tablename in ('bl_maddeler','bl_madde_anahtar','bl_testler','bl_olcumler','bl_olcum_cevaplar')`);
 const ogr = await su(`select count(*)::int n from public.teshis_students`);
 const ogt = await su(`select count(*)::int n from public.bl_ogretmenler`);
+const sekilPol = (await su(`select count(*)::int n from pg_policies where schemaname = 'storage' and policyname like 'bl\\_sekil\\_%'`)).rows[0].n;
+const dersPol = (await su(`select count(*)::int n from pg_policies where schemaname = 'storage' and policyname like 'bl\\_ders\\_%'`)).rows[0].n;
+ok('Geri alma: şekil politikaları gitti, 001\'in ders dosyası politikaları duruyor', sekilPol === 0 && dersPol === 4, `${sekilPol} / ${dersPol}`);
 ok('Geri alma: ölçüm tabloları gitti; öğrenciler, öğretmenler, dersler duruyor',
   r.rows[0].n === 0 && ogr.rows[0].n >= 2 && ogt.rows[0].n === 2 && (await su(`select count(*)::int n from public.bl_dersler`)).rows[0].n === once);
 await db.query(readFileSync(dir + '003_olcum.sql', 'utf8'));
