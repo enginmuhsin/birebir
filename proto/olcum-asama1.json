@@ -1,0 +1,168 @@
+{
+  "tarih": "2026-11-11T21:27:43.759Z",
+  "not": "Yerel sunucu ve aynı makinede iki tarayıcı; gerçek ağ ve TURN ile denenmedi.",
+  "veri_kanali_acilis_ms": 724,
+  "medya_B": {
+    "audioIn": 2601,
+    "videoIn": 18783,
+    "framesDecoded": 16,
+    "rtt": 0,
+    "relay": false
+  },
+  "medya_A": {
+    "audioIn": 2663,
+    "videoIn": 19638,
+    "framesDecoded": 16,
+    "rtt": 0.002,
+    "relay": false
+  },
+  "gecikme": [
+    {
+      "yol": "veri kanalı (eşten eşe, aynı makine)",
+      "kalemden_alima_ms": {
+        "n": 327,
+        "medyan": 33,
+        "p95": 49
+      },
+      "kalemden_ekrana_ms": {
+        "n": 327,
+        "medyan": 52,
+        "p95": 68
+      }
+    },
+    {
+      "yol": "yayın kanalı (50 ± 15 ms benzetim)",
+      "kalemden_alima_ms": {
+        "n": 324,
+        "medyan": 84,
+        "p95": 104
+      },
+      "kalemden_ekrana_ms": {
+        "n": 324,
+        "medyan": 105,
+        "p95": 125
+      }
+    }
+  ],
+  "cizim_1000_cizgi_telefon_4x": {
+    "onbellekli_ms": {
+      "n": 65,
+      "medyan": 2.2,
+      "p95": 7.3
+    },
+    "onbelleksiz_ms": {
+      "n": 5,
+      "medyan": 860.1,
+      "p95": 881.1
+    }
+  },
+  "toplam_sure_sn": 96,
+  "testler": [
+    {
+      "test": "Veri kanalı iki tarafta açıldı",
+      "sonuc": "geçti",
+      "ayrinti": "724 ms (sayfa açılışından)"
+    },
+    {
+      "test": "Ses ve görüntü iki yönde akıyor (sahte cihaz)",
+      "sonuc": "geçti",
+      "ayrinti": "{\"audioIn\":2601,\"videoIn\":18783,\"framesDecoded\":16,\"rtt\":0,\"relay\":false}"
+    },
+    {
+      "test": "Tahta yayın yedeğinde de eşitlendi",
+      "sonuc": "geçti",
+      "ayrinti": ""
+    },
+    {
+      "test": "Veri kanalı kopunca yayın kanalına düştü, durum aynı kaldı",
+      "sonuc": "geçti",
+      "ayrinti": "yayından giden: 5"
+    },
+    {
+      "test": "Veri kanalı kendiliğinden yeniden açıldı",
+      "sonuc": "geçti",
+      "ayrinti": "koparmadan itibaren 1765 ms içinde (3 çizgi süren çizim dahil)"
+    },
+    {
+      "test": "Sinyal sunucusu kopukken tahta veri kanalından eşitlendi",
+      "sonuc": "geçti",
+      "ayrinti": "B durumu: kopuk"
+    },
+    {
+      "test": "Geri al / ileri al karşı tarafa yansıdı",
+      "sonuc": "geçti",
+      "ayrinti": "47 → 46 → 47"
+    },
+    {
+      "test": "Öğrenci silgisi öğretmen çizgisini silmedi",
+      "sonuc": "geçti",
+      "ayrinti": ""
+    },
+    {
+      "test": "Silgi çizgiyi sildi, geri al geri getirdi",
+      "sonuc": "geçti",
+      "ayrinti": ""
+    },
+    {
+      "test": "Düz çizgi, çember, vurgu, alan silgisi karşı tarafa ulaştı",
+      "sonuc": "geçti",
+      "ayrinti": "{\"cizgi\":{\"done\":true,\"pts\":10},\"cember\":{\"done\":true,\"pts\":10},\"vurgu\":{\"done\":true,\"pts\":25},\"silgi_alan\":{\"done\":true,\"pts\":25}}"
+    },
+    {
+      "test": "Düz çizgi ve çember yalnız birkaç nokta taşıyor",
+      "sonuc": "geçti",
+      "ayrinti": "çizgi 10, çember 10 nokta"
+    },
+    {
+      "test": "Lazer karşıda görünür, tahta durumuna yazılmaz",
+      "sonuc": "geçti",
+      "ayrinti": ""
+    },
+    {
+      "test": "Kalem yetkisi: kapalıyken öğrenci çizemez, açılınca çizer",
+      "sonuc": "geçti",
+      "ayrinti": ""
+    },
+    {
+      "test": "Avuç içi reddi: kalemden sonra dokunma çizgi üretmedi",
+      "sonuc": "geçti",
+      "ayrinti": ""
+    },
+    {
+      "test": "PDF 2 sayfa eklendi, öğrenci ilk PDF sayfasında ve metin görünüyor",
+      "sonuc": "geçti",
+      "ayrinti": "405 ms, koyu piksel oranı 0.42%"
+    },
+    {
+      "test": "PDF sayfası üzerine çizim eşitlendi",
+      "sonuc": "geçti",
+      "ayrinti": ""
+    },
+    {
+      "test": "1.000 çizgilik yük eşitlendi",
+      "sonuc": "geçti",
+      "ayrinti": "B sayfa 0 çizgi: 1052"
+    },
+    {
+      "test": "Önbellekle kare süresi 16,7 ms (60 fps) altında",
+      "sonuc": "geçti",
+      "ayrinti": "önbellekli medyan 2.2 / p95 7.3 ms; önbelleksiz medyan 860.1 / p95 881.1 ms"
+    },
+    {
+      "test": "Sayfa yenilenen öğrenci 1.000+ çizgiyi yeniden aldı",
+      "sonuc": "geçti",
+      "ayrinti": ""
+    },
+    {
+      "test": "Geç katılan izleyici aynı durumu ve aynı pikselleri gördü (PDF sayfası)",
+      "sonuc": "geçti",
+      "ayrinti": "farklı piksel 0 / 2316800"
+    },
+    {
+      "test": "Sayfa hatası yok",
+      "sonuc": "geçti",
+      "ayrinti": ""
+    }
+  ],
+  "ozet": "21 / 21 geçti"
+}

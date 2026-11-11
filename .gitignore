@@ -1,0 +1,10 @@
+node_modules/
+app/dist/
+proto/dist/
+proto/uploads/
+*.map
+# test çıktıları (her çalıştırmada yeniden üretilir)
+test/ciktilar/*
+!test/ciktilar/.gitkeep
+proto/*.png
+proto/ornek.pdf
