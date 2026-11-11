@@ -11,7 +11,7 @@ YKS Teşhis Defteri ile aynı Supabase projesini kullanır. Canlı adres: https:
 | `src/app/` | Uygulama: öğretmen paneli, öğrenci girişi ve defteri, ders odası |
 | `src/board/` | Ortak tahta: çizim katmanları, araçlar, WebRTC (ses, görüntü, tahta veri kanalı), PDF |
 | `src/protocol/` | Çizgi protokolü v1 (YKS Teşhis `stroke_recordings` ile ortak) + JSON Schema |
-| `db/` | `000_on_kontrol.sql`, `001_birebir.sql` (canlıda, 30.10.2026), `001_birebir_geri.sql`, `002_dogrulama.sql`, `003_olcum.sql` (Ders Ölçümü, henüz canlıda değil), `003_olcum_geri.sql`, `004_olcum_dogrulama.sql` |
+| `db/` | `000_on_kontrol.sql`, `001_birebir.sql` (canlıda, 30.10.2026), `001_birebir_geri.sql`, `002_dogrulama.sql`, `003_olcum.sql` (Ders Ölçümü + özel şekil kovası `bl-sekiller`, henüz canlıda değil), `003_olcum_geri.sql`, `004_olcum_dogrulama.sql` |
 | `supabase/functions/bl-ogrenci-giris/` | Öğrenci girişi Edge Function'ı (`tek-dosya.ts` panele yapıştırmak için) |
 | `proto/` | Yerel prototip ve ölçümler (Aşama 0–1) |
 | `test/` | Birim testleri, uygulama uçtan uca testi, ekran görüntüleri |
@@ -22,8 +22,8 @@ YKS Teşhis Defteri ile aynı Supabase projesini kullanır. Canlı adres: https:
 npm ci
 npm run build:app     # app/dist üretir (Cloudflare Pages derleme komutu)
 npm test              # birim testleri (protokol + giriş mantığı)
-npm run test:db       # 65 RLS/RPC + 60 ölçüm testi (yerel PostgreSQL 16 gerekir)
-npm run test:app      # uygulama uçtan uca: yerel PostgreSQL + PostgREST + migration (24 kontrol)
+npm run test:db       # 65 RLS/RPC + 76 ölçüm testi (yerel PostgreSQL 16 gerekir)
+npm run test:app      # uygulama uçtan uca: yerel PostgreSQL + PostgREST + migration (25 kontrol)
 npm run e2e           # tahta prototipi uçtan uca (21 kontrol)
 ```
 

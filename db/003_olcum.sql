@@ -8,6 +8,9 @@
 --  * Öğrenci soruları yalnız kendisine atanmış, açık bir ölçüm üzerinden ve anahtarsız görür.
 --  * Puanlamayı sunucu yapar; öğrenci yalnız şıkkını gönderir. Gönderim bir kez yapılır.
 --  * Kâğıtla çözülen testin cevaplarını öğretmen girer (kaynak = 'kagit'); aynı puanlama kullanılır.
+--  * Kazanım = müfredat kimliği (TM/TG/AM/AG + iki rakam + alt numara, ör. TG02.3; teshis curriculum.json).
+--  * Şekiller özel 'bl-sekiller' kovasında (<öğretmen_id>/<dosya>). Öğrenci bir şekli yalnız kendisine
+--    açık (henüz gönderilmemiş) bir ölçümde varsa görür; adres imzalı ve kısa ömürlüdür.
 -- =====================================================================================
 begin;
 
@@ -20,13 +23,13 @@ create table public.bl_maddeler (
   id          uuid primary key default gen_random_uuid(),
   teacher_id  uuid not null default auth.uid(),
   kod         text not null check (kod ~ '^[A-Za-z0-9._-]{1,40}$'),
-  kazanim     text not null check (length(kazanim) between 1 and 20),
+  kazanim     text not null check (kazanim ~ '^(TM|TG|AM|AG)[0-9]{2}\.[0-9]{1,2}$'),
   aile        text check (length(aile) <= 60),
   etiket      text not null default '' check (length(etiket) <= 60),
   kok         text not null check (length(kok) between 1 and 2000),
   soru        text not null check (length(soru) between 1 and 500),
   siklar      jsonb not null check (jsonb_typeof(siklar) = 'array' and jsonb_array_length(siklar) = 5),
-  sekil       text check (length(sekil) <= 300),
+  sekil       text check (sekil ~ '^[0-9a-f-]{36}/[A-Za-z0-9._-]{1,120}\.(png|svg|jpg|jpeg|webp)$'),  -- 'bl-sekiller' kovasındaki yol
   olusturma   timestamptz not null default now(),
   unique (teacher_id, kod)
 );
@@ -315,16 +318,45 @@ begin
          and (p_ders_kodu is null or t.ders_kodu = p_ders_kodu)), '[]'::jsonb));
 end $$;
 
+-- Öğrenci bu şekli görebilir mi? (kendisine açık ve gönderilmemiş bir ölçümün sorularında geçiyorsa)
+create or replace function public.bl_sekil_gorebilir(p_yol text) returns boolean
+language sql stable security definer set search_path = '' as $$
+  select public.bl_ogrencim() is not null and exists (
+    select 1 from public.bl_olcumler o
+      join public.bl_testler t on t.id = o.test_id
+      join public.bl_maddeler m on m.id = any (t.maddeler)
+     where o.student_id = public.bl_ogrencim() and o.durum = 'acik' and m.sekil = p_yol)
+$$;
+
+-- -------------------------------------------------------------------------------------
+-- 4b) Storage: şekiller için özel kova; yol = <öğretmen_id>/<dosya>
+-- -------------------------------------------------------------------------------------
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('bl-sekiller', 'bl-sekiller', false, 2097152, array['image/png', 'image/svg+xml', 'image/jpeg', 'image/webp'])
+on conflict (id) do nothing;
+
+create policy bl_sekil_oku on storage.objects for select to authenticated
+  using (bucket_id = 'bl-sekiller' and (
+         (public.bl_ogretmen_mi() and (storage.foldername(name))[1] = auth.uid()::text)
+         or public.bl_sekil_gorebilir(name)));
+create policy bl_sekil_ekle on storage.objects for insert to authenticated
+  with check (bucket_id = 'bl-sekiller' and public.bl_ogretmen_mi() and (storage.foldername(name))[1] = auth.uid()::text);
+create policy bl_sekil_guncelle on storage.objects for update to authenticated
+  using (bucket_id = 'bl-sekiller' and public.bl_ogretmen_mi() and (storage.foldername(name))[1] = auth.uid()::text)
+  with check (bucket_id = 'bl-sekiller' and public.bl_ogretmen_mi() and (storage.foldername(name))[1] = auth.uid()::text);
+create policy bl_sekil_sil on storage.objects for delete to authenticated
+  using (bucket_id = 'bl-sekiller' and public.bl_ogretmen_mi() and (storage.foldername(name))[1] = auth.uid()::text);
+
 -- -------------------------------------------------------------------------------------
 -- 5) Yetkiler
 -- -------------------------------------------------------------------------------------
 revoke all on function public.bl_olcum_puanla(uuid, jsonb, int, text), public.bl_testler_tetik(), public.bl_testler_kilit(),
   public.bl_olcum_ac(uuid, uuid, uuid), public.bl_olcum_kapat(uuid), public.bl_olcum_kagit(uuid, jsonb, int),
   public.bl_olcumlerim(), public.bl_olcum_sorulari(uuid), public.bl_olcum_gonder(uuid, jsonb, int),
-  public.bl_olcum_raporu(uuid, text) from public, anon, authenticated;
+  public.bl_olcum_raporu(uuid, text), public.bl_sekil_gorebilir(text) from public, anon, authenticated;
 grant execute on function public.bl_olcum_ac(uuid, uuid, uuid), public.bl_olcum_kapat(uuid), public.bl_olcum_kagit(uuid, jsonb, int),
   public.bl_olcumlerim(), public.bl_olcum_sorulari(uuid), public.bl_olcum_gonder(uuid, jsonb, int),
-  public.bl_olcum_raporu(uuid, text) to authenticated;
+  public.bl_olcum_raporu(uuid, text), public.bl_sekil_gorebilir(text) to authenticated;
 -- bl_olcum_puanla yalnız diğer fonksiyonların içinden çağrılır (doğrudan çağrılamaz).
 
 commit;
